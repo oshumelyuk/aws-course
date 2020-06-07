@@ -1,0 +1,51 @@
+Description: Java EC2 instance
+Resources:
+  MyEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0323c3dd2da7fb37d 
+      InstanceType: t2.micro
+      SecurityGroups:
+        - !Ref SshWebServiceSecurityGroup
+        - !Ref HttpWebServiceSecurityGroup
+  SshWebServiceSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0
+  HttpWebServiceSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable Http access via port 80
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '80'
+          ToPort: '80'
+          CidrIp: 0.0.0.0/0
+  WebServiceLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData:
+        InstanceType: t2.micro
+        ImageId: ami-0323c3dd2da7fb37d 
+        SecurityGroups:
+          - !Ref SshWebServiceSecurityGroup
+          - !Ref HttpWebServiceSecurityGroup
+      LaunchTemplateName: !Sub ${AWS::StackName}-launch-template
+  WebServiceAutoScaling:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties: 
+      AutoScalingGroupName: webServiceAutoScaling
+      MinSize: "1"
+      MaxSize: "4"
+      DesiredCapacity: "2"
+      LaunchTemplate:
+        LaunchTemplateId: !Ref WebServiceLaunchTemplate
+        Version: !GetAtt WebServiceLaunchTemplate.LatestVersionNumber
+      AvailabilityZones: 
+        Fn::GetAZs: 
+          Ref: "AWS::Region"

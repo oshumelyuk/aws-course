@@ -1,0 +1,50 @@
+Description: Java EC2 instance
+Parameters:
+  AccessKey:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+    Type: 'AWS::EC2::KeyPair::KeyName'
+    ConstraintDescription: must be the name of an existing EC2 KeyPair
+Resources:
+  SshWebServiceSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0
+  HttpWebServiceSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable Http access via port 80
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '80'
+          ToPort: '80'
+          CidrIp: 0.0.0.0/0
+  WebServiceLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData:
+        InstanceType: t2.micro
+        ImageId: ami-0323c3dd2da7fb37d 
+        KeyName: !Ref AccessKey
+        UserData: IyEvYmluL2Jhc2gKc3VkbyBhbWF6b24tbGludXgtZXh0cmFzIGluc3RhbGwgamF2YS1vcGVuamRrMTEgLS1hc3N1bWUteWVz
+        SecurityGroups:
+          - !Ref SshWebServiceSecurityGroup
+          - !Ref HttpWebServiceSecurityGroup
+      LaunchTemplateName: !Sub ${AWS::StackName}-launch-template
+  WebServiceAutoScaling:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties: 
+      AutoScalingGroupName: webServiceAutoScaling
+      MinSize: "1"
+      MaxSize: "4"
+      DesiredCapacity: "2"
+      LaunchTemplate:
+        LaunchTemplateId: !Ref WebServiceLaunchTemplate
+        Version: !GetAtt WebServiceLaunchTemplate.LatestVersionNumber
+      AvailabilityZones: 
+        Fn::GetAZs: 
+          Ref: "AWS::Region"

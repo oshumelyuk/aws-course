@@ -1,0 +1,60 @@
+Description: Java EC2 instance
+Parameters:
+  AccessKey:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
+    Type: 'AWS::EC2::KeyPair::KeyName'
+    ConstraintDescription: must be the name of an existing EC2 KeyPair
+Resources:
+  SshWebServiceSecurityGroup:
+      Type: 'AWS::EC2::SecurityGroup'
+      Properties:
+        GroupDescription: Enable SSH access via port 22
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: '22'
+            ToPort: '22'
+            CidrIp: 0.0.0.0/0
+  EC2WithS3Access:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0323c3dd2da7fb37d 
+      InstanceType: t2.micro
+      KeyName: !Ref AccessKey
+      IamInstanceProfile: !Ref AccessS3InstanceProfile
+      UserData: IyEvYmluL2Jhc2gKYXdzIHMzIGNwIHMzOi8vYWMtYnVrL2F3cy1zMy50eHQgYXdzLWR3bmwudHh0
+      SecurityGroups:
+        - !Ref SshWebServiceSecurityGroup
+  AccessS3InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties: 
+      Path: /
+      Roles: 
+        - !Ref AccessS3Role
+  AccessS3Role:
+    Type: "AWS::IAM::Role"
+    Properties:
+      Path: "/"     
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+              - ec2.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+  AccessS3Policy:
+    Type: 'AWS::IAM::Policy'
+    Properties:
+      PolicyName: AccessS3Policy
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: 
+              - s3:Get*
+              - s3:Put*
+              - s3:List*
+            Resource: '*'
+      Roles:
+        - !Ref AccessS3Role
