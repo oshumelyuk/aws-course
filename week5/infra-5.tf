@@ -37,5 +37,5 @@ resource "aws_sns_topic" "week5_sns_topic" {
 resource "aws_sns_topic_subscription" "week5_sns_subscr" {
   topic_arn = aws_sns_topic.week5_sns_topic.arn
   protocol  = "sms"
-  endpoint  = "+380969827528"
+  endpoint  = "+380965553344"
 }
