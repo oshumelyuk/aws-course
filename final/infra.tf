@@ -76,7 +76,8 @@ resource "aws_security_group" "acPublicSG" {
 
 resource "aws_elb" "acELB" {
   name               = "acELB"
-  availability_zones = ["us-east-1b"]
+  security_groups    = [aws_security_group.acPublicSG.id]
+  subnets            = [aws_subnet.acPublicSubnet.id]
 
   listener {
     instance_port     = 8000
@@ -92,11 +93,6 @@ resource "aws_elb" "acELB" {
     target              = "HTTP:8000/"
     interval            = 30
   }
-
-  cross_zone_load_balancing   = true
-  idle_timeout                = 400
-  connection_draining         = true
-  connection_draining_timeout = 400
 
   tags = {
     Name = "acELB"
@@ -204,7 +200,7 @@ resource "aws_autoscaling_group" "acAutoScalingGroup" {
   desired_capacity    = 2
   max_size            = 2
   min_size            = 2
-  #  load_balancers      = [aws_elb.acELB.name]
+  load_balancers      = [aws_elb.acELB.name]
   launch_template {
     id      = aws_launch_template.acPublicEC2Template.id
     version = "$Latest"
