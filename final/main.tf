@@ -21,9 +21,9 @@ module "public_ec2" {
   subnet_cidr              = "10.1.2.0/24"
   subnet_availability_zone = "us-east-1b"
   ec2_access_key_name      = aws_key_pair.acAccessKey.key_name
-  desired_ag_capacity      = 1
-  max_ag_capacity          = 1
-  min_ag_capacity          = 1
+  desired_ag_capacity      = 2
+  max_ag_capacity          = 2
+  min_ag_capacity          = 2
   dynamodb_arn             = module.dynamodb.dynamodb_arn
   sns_arn                  = module.sns.sns_arn
   sqs_arn                  = module.sqs.sqs_arn
