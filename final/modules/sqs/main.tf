@@ -7,7 +7,7 @@ resource "aws_sqs_queue" "ac_queue_deadletter" {
 }
 
 resource "aws_sqs_queue" "ac_sqs" {
-  name                      = "edu-lohika-training-aws-sqs-topic"
+  name                      = "edu-lohika-training-aws-sqs-queue"
   delay_seconds             = 1
   max_message_size          = 2048
   message_retention_seconds = 86400

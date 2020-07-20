@@ -24,6 +24,9 @@ module "public_ec2" {
   desired_ag_capacity      = 1
   max_ag_capacity          = 1
   min_ag_capacity          = 1
+  dynamodb_arn             = module.dynamodb.dynamodb_arn
+  sns_arn                  = module.sns.sns_arn
+  sqs_arn                  = module.sqs.sqs_arn
 }
 
 module "private_ec2" {
@@ -34,6 +37,9 @@ module "private_ec2" {
   subnet_availability_zone = "us-east-1a"
   ec2_access_key_name      = aws_key_pair.acAccessKey.key_name
   rds_host                 = module.rds.rds_host
+  rds_arn                  = module.rds.rds_arn
+  sns_arn                  = module.sns.sns_arn
+  sqs_arn                  = module.sqs.sqs_arn
 }
 
 module "nat" {
@@ -46,7 +52,10 @@ module "nat" {
 }
 
 module "rds" {
-  source = "./modules/rds"
+  source                   = "./modules/rds"
+  vpc_id                   = aws_vpc.acVPC.id
+  subnet_cidr              = "10.1.3.0/24"
+  subnet_availability_zone = "us-east-1c"
 }
 
 module "dynamodb" {

@@ -17,7 +17,7 @@ data "aws_iam_policy_document" "ec2_accesspolicy_document" {
     ]
 
     resources = [
-      "*",
+      "arn:aws:s3:::ac-buk/*",
     ]
   }
 
@@ -31,7 +31,7 @@ data "aws_iam_policy_document" "ec2_accesspolicy_document" {
     ]
 
     resources = [
-      "*",
+      var.dynamodb_arn
     ]
   }
 
@@ -41,7 +41,7 @@ data "aws_iam_policy_document" "ec2_accesspolicy_document" {
     ]
 
     resources = [
-      "*",
+      var.sqs_arn
     ]
   }
 
@@ -51,11 +51,10 @@ data "aws_iam_policy_document" "ec2_accesspolicy_document" {
     ]
 
     resources = [
-      "*",
+      var.sns_arn
     ]
   }
 }
-
 
 resource "aws_iam_role" "ec2_accessrole" {
   name               = "ec2_accessrole"

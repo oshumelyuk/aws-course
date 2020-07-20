@@ -1,5 +1,6 @@
 resource "aws_security_group" "rds_sg" {
   name = "rds_sg"
+  vpc_id  = var.vpc_id
   ingress {
     from_port   = 5432
     to_port     = 5432
@@ -15,6 +16,24 @@ resource "aws_security_group" "rds_sg" {
   }
 }
 
+resource "aws_db_subnet_group" "ac_rds_sg" {
+  name       = "ac_rds_sg"
+  subnet_ids = [aws_subnet.acRDSSubnet.id]
+
+  tags = {
+    Name = "ac RDS subnet group"
+  }
+}
+
+resource "aws_subnet" "acRDSSubnet" {
+  vpc_id                  = var.vpc_id
+  cidr_block              = var.subnet_cidr
+  availability_zone       = var.subnet_availability_zone
+  tags = {
+    Name = "acRDSSubnet"
+  }
+}
+
 resource "aws_db_instance" "ac_rds" {
   allocated_storage      = 20
   engine                 = "postgres"
@@ -27,4 +46,5 @@ resource "aws_db_instance" "ac_rds" {
   username               = "rootuser"
   skip_final_snapshot    = true
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
+  db_subnet_group_name   = aws_db_subnet_group.ac_rds_sg.name
 }

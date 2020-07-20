@@ -28,3 +28,18 @@ variable "rds_host" {
   type = string
 }
 
+variable "rds_arn" {
+  description = "RDS arn"
+  type = string
+}
+
+variable "sqs_arn" {
+  description = "SQS arn"
+  type = string
+}
+
+variable "sns_arn" {
+  description = "SNS arn"
+  type = string
+}
+

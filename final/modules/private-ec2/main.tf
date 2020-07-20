@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "private_ec2_accesspolicy_document" {
     ]
 
     resources = [
-      "*",
+      "arn:aws:s3:::ac-buk/*",
     ]
   }
 
@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "private_ec2_accesspolicy_document" {
     ]
 
     resources = [
-      "*",
+      var.rds_arn,
     ]
   }
 
@@ -39,7 +39,7 @@ data "aws_iam_policy_document" "private_ec2_accesspolicy_document" {
     ]
 
     resources = [
-      "*",
+      var.sqs_arn,
     ]
   }
 
@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "private_ec2_accesspolicy_document" {
     ]
 
     resources = [
-      "*",
+      var.sns_arn,
     ]
   }
 

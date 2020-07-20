@@ -32,3 +32,18 @@ variable "min_ag_capacity" {
   description = "Min autoscaling group capacity"
   type = number
 }
+
+variable "dynamodb_arn" {
+  description = "DynamoDB arn"
+  type = string
+}
+
+variable "sqs_arn" {
+  description = "SQS arn"
+  type = string
+}
+
+variable "sns_arn" {
+  description = "SNS arn"
+  type = string
+}
