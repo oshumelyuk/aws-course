@@ -54,8 +54,10 @@ module "nat" {
 module "rds" {
   source                   = "./modules/rds"
   vpc_id                   = aws_vpc.acVPC.id
-  subnet_cidr              = "10.1.3.0/24"
-  subnet_availability_zone = "us-east-1c"
+  subnet_1_cidr              = "10.1.3.0/24"
+  subnet_1_availability_zone = "us-east-1a"
+  subnet_2_cidr              = "10.1.4.0/24"
+  subnet_2_availability_zone = "us-east-1b"
 }
 
 module "dynamodb" {

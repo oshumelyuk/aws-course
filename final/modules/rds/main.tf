@@ -18,19 +18,28 @@ resource "aws_security_group" "rds_sg" {
 
 resource "aws_db_subnet_group" "ac_rds_sg" {
   name       = "ac_rds_sg"
-  subnet_ids = [aws_subnet.acRDSSubnet.id]
+  subnet_ids = [aws_subnet.acRDSSubnet1.id, aws_subnet.acRDSSubnet2.id]
 
   tags = {
     Name = "ac RDS subnet group"
   }
 }
 
-resource "aws_subnet" "acRDSSubnet" {
+resource "aws_subnet" "acRDSSubnet1" {
   vpc_id                  = var.vpc_id
-  cidr_block              = var.subnet_cidr
-  availability_zone       = var.subnet_availability_zone
+  cidr_block              = var.subnet_1_cidr
+  availability_zone       = var.subnet_1_availability_zone
   tags = {
-    Name = "acRDSSubnet"
+    Name = "acRDSSubnet1"
+  }
+}
+
+resource "aws_subnet" "acRDSSubnet2" {
+  vpc_id                  = var.vpc_id
+  cidr_block              = var.subnet_2_cidr
+  availability_zone       = var.subnet_2_availability_zone
+  tags = {
+    Name = "acRDSSubnet2"
   }
 }
 
